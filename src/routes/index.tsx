@@ -1,24 +1,104 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "PodPuff — Turn Any Topic Into a Podcast" },
+      {
+        name: "description",
+        content:
+          "Type a topic and generate a friendly, listenable podcast episode in seconds with PodPuff.",
+      },
+      { property: "og:title", content: "PodPuff — Turn Any Topic Into a Podcast" },
+      {
+        property: "og:description",
+        content:
+          "Type a topic and generate a friendly, listenable podcast episode in seconds with PodPuff.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [topic, setTopic] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+
+  const generate = () => {
+    if (status === "loading") return;
+    setStatus("loading");
+    setTimeout(() => setStatus("done"), 2500);
+  };
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
+    <main
+      className="flex min-h-screen items-center justify-center px-4 py-12 sm:px-6"
+      style={{ backgroundImage: "var(--gradient-soft)" }}
     >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+      <section
+        className="w-full max-w-xl rounded-3xl bg-card/80 p-6 backdrop-blur-sm sm:p-10"
+        style={{ boxShadow: "var(--shadow-soft)" }}
+      >
+        <header className="text-center">
+          <span className="inline-block rounded-full bg-accent px-4 py-1 text-xs font-semibold tracking-wide text-accent-foreground">
+            ✨ instant episodes
+          </span>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            PodPuff
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+            Pick a topic, press the button, and we'll whip up a cozy little podcast.
+          </p>
+        </header>
+
+        <form
+          className="mt-8 space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            generate();
+          }}
+        >
+          <label htmlFor="topic" className="sr-only">
+            Podcast topic
+          </label>
+          <input
+            id="topic"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder="Type podcast topic here..."
+            className="w-full rounded-2xl border border-border bg-background px-5 py-4 text-base text-foreground placeholder:text-muted-foreground outline-none transition focus:border-ring focus:ring-4 focus:ring-ring/25"
+          />
+
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full rounded-2xl bg-primary px-5 py-4 text-base font-semibold text-primary-foreground transition-colors duration-200 hover:bg-secondary hover:text-secondary-foreground focus-visible:ring-4 focus-visible:ring-ring/40 focus-visible:outline-none disabled:opacity-70"
+          >
+            🔊 Generate Podcast
+          </button>
+        </form>
+
+        <div className="mt-8 flex min-h-32 items-center justify-center rounded-3xl border border-dashed border-border bg-muted/60 p-6 text-center">
+          {status === "loading" ? (
+            <div className="flex items-center gap-3" aria-live="polite">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="h-3 w-3 animate-pulse rounded-full bg-primary"
+                  style={{ animationDelay: `${i * 0.2}s`, animationDuration: "1s" }}
+                />
+              ))}
+            </div>
+          ) : status === "done" ? (
+            <p className="text-base font-semibold text-foreground">Feature coming soon!</p>
+          ) : (
+            <p className="text-sm text-muted-foreground">Podcast will appear here.</p>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
