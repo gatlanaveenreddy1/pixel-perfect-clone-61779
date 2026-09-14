@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+
+import { generatePodcast } from "@/lib/podcast.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,13 +28,28 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [topic, setTopic] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [audioFile, setAudioFile] = useState<string | null>(null);
+  const run = useServerFn(generatePodcast);
 
-  const generate = () => {
-    if (status === "loading") return;
+  const generate = async () => {
+    if (status === "loading" || !topic.trim()) return;
     setStatus("loading");
-    setTimeout(() => setStatus("done"), 2500);
+    setAudioFile(null);
+    try {
+      const result = await run({ data: { text: topic.trim() } });
+      if (!result.audioFile) {
+        setStatus("error");
+        return;
+      }
+      setAudioFile(result.audioFile);
+      setStatus("done");
+      setTopic("");
+    } catch {
+      setStatus("error");
+    }
   };
+
 
   return (
     <main
