@@ -44,8 +44,8 @@ function Index() {
         setStatus("error");
         return;
       }
-      setAudioFile(result.audioFile);
-      setScript(result.script);
+      setAudioFile(result.audioFile ?? null);
+      setScript(result.script ?? null);
       setStatus("done");
       setTopic("");
     } catch {
