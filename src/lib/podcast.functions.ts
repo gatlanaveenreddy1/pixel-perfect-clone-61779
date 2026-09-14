@@ -31,8 +31,8 @@ export const generatePodcast = createServerFn({ method: "POST" })
 
     const item = Array.isArray(payload) ? payload[0] : payload;
     const obj = (item && typeof item === "object" ? item : {}) as Record<string, unknown>;
-    const audioFile = typeof obj.audioFile === "string" ? obj.audioFile : null;
-    const script = typeof obj.text === "string" ? obj.text : null;
+    const audioFile = typeof obj["audioFile"] === "string" ? (obj["audioFile"] as string) : null;
+    const script = typeof obj["text"] === "string" ? (obj["text"] as string) : null;
 
     if (!audioFile && !script)
       return { audioFile: null as string | null, script: null as string | null, error: "No result returned" };
