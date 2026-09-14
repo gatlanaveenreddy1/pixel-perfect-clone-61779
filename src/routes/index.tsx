@@ -30,19 +30,22 @@ function Index() {
   const [topic, setTopic] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [audioFile, setAudioFile] = useState<string | null>(null);
+  const [script, setScript] = useState<string | null>(null);
   const run = useServerFn(generatePodcast);
 
   const generate = async () => {
     if (status === "loading" || !topic.trim()) return;
     setStatus("loading");
     setAudioFile(null);
+    setScript(null);
     try {
       const result = await run({ data: { text: topic.trim() } });
-      if (!result.audioFile) {
+      if (!result.audioFile && !result.script) {
         setStatus("error");
         return;
       }
       setAudioFile(result.audioFile);
+      setScript(result.script);
       setStatus("done");
       setTopic("");
     } catch {
