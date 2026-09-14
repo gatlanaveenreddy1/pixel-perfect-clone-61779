@@ -99,23 +99,38 @@ function Index() {
           </button>
         </form>
 
-        <div className="mt-8 flex min-h-32 items-center justify-center rounded-3xl border border-dashed border-border bg-muted/60 p-6 text-center">
+        <div className="mt-8 flex min-h-32 flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-border bg-muted/60 p-6 text-center">
           {status === "loading" ? (
-            <div className="flex items-center gap-3" aria-live="polite">
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className="h-3 w-3 animate-pulse rounded-full bg-primary"
-                  style={{ animationDelay: `${i * 0.2}s`, animationDuration: "1s" }}
-                />
-              ))}
+            <div className="flex flex-col items-center gap-3" aria-live="polite">
+              <div className="flex items-center gap-3">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="h-3 w-3 animate-pulse rounded-full bg-primary"
+                    style={{ animationDelay: `${i * 0.2}s`, animationDuration: "1s" }}
+                  />
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">Creating podcast... please wait!</p>
             </div>
-          ) : status === "done" ? (
-            <p className="text-base font-semibold text-foreground">Feature coming soon!</p>
+          ) : status === "done" && audioFile ? (
+            <>
+              <p className="text-base font-semibold text-foreground">
+                🎉 Podcast is ready! Click play to listen
+              </p>
+              <audio controls src={audioFile} className="w-full">
+                Your browser does not support audio playback.
+              </audio>
+            </>
+          ) : status === "error" ? (
+            <p className="text-base font-semibold text-destructive">
+              Oops! Something went wrong. Please try again
+            </p>
           ) : (
             <p className="text-sm text-muted-foreground">Podcast will appear here.</p>
           )}
         </div>
+
       </section>
     </main>
   );
