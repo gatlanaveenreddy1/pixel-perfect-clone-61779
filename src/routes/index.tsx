@@ -116,14 +116,23 @@ function Index() {
               </div>
               <p className="text-sm text-muted-foreground">Creating podcast... please wait!</p>
             </div>
-          ) : status === "done" && audioFile ? (
+          ) : status === "done" && (audioFile || script) ? (
             <>
               <p className="text-base font-semibold text-foreground">
-                🎉 Podcast is ready! Click play to listen
+                {audioFile
+                  ? "🎉 Podcast is ready! Click play to listen"
+                  : "🎉 Your podcast script is ready!"}
               </p>
-              <audio controls src={audioFile} className="w-full">
-                Your browser does not support audio playback.
-              </audio>
+              {audioFile ? (
+                <audio controls src={audioFile} className="w-full">
+                  Your browser does not support audio playback.
+                </audio>
+              ) : null}
+              {script ? (
+                <p className="whitespace-pre-line text-left text-sm text-muted-foreground">
+                  {script}
+                </p>
+              ) : null}
             </>
           ) : status === "error" ? (
             <p className="text-base font-semibold text-destructive">
