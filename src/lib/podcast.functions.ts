@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 const WEBHOOK_URL =
-  "https://workflow.ccbp.in/webhook-test/f93cf81b-1ff0-433f-a934-1aa45ee33ad5";
+  "https://workflow.ccbp.in/webhook/f93cf81b-1ff0-433f-a934-1aa45ee33ad5";
 
 export const generatePodcast = createServerFn({ method: "POST" })
   .inputValidator((input: { text: string }) => {
