@@ -124,9 +124,19 @@ function Index() {
                   : "🎉 Your podcast script is ready!"}
               </p>
               {audioFile ? (
-                <audio controls src={audioFile} className="w-full">
-                  Your browser does not support audio playback.
-                </audio>
+                <>
+                  <audio controls preload="metadata" src={audioFile} className="w-full">
+                    Your browser does not support audio playback.
+                  </audio>
+                  <a
+                    href={audioFile}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-medium text-primary underline underline-offset-4"
+                  >
+                    Open audio in a new tab
+                  </a>
+                </>
               ) : null}
               {script ? (
                 <p className="whitespace-pre-line text-left text-sm text-muted-foreground">
